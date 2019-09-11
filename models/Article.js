@@ -1,4 +1,4 @@
-var mangoose = require("mongoose");
+var mongoose = require("mongoose");
 
 //Save a reference to the schema constructor
 var Schema = mongoose.Schema;
@@ -13,9 +13,9 @@ var ArticleSchema = new Schema({
         type: String,
         required: true
     },
-    note: {
+    comment: {
         type: Schema.Types.ObjectId,
-        ref: "Note"
+        ref: "Comment"
     }
 });
 //This creates our model from the above schema, using mongoose's model method
