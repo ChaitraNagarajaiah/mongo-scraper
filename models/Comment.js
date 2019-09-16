@@ -5,8 +5,14 @@ var Schema = mongoose.Schema;
 
 //using the Schema constructor, create a new CommentSchema object
 var CommentSchema = new Schema({
-    title: String,
-    body: String
+    name: {
+        type: String
+    },
+
+    body: {
+        type: String,
+        required: true
+    }
 });
 
 //this cretes our model from the above schema, using mongoose's model method
