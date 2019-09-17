@@ -31,19 +31,20 @@ var exphbs = require('express-handlebars');
 
 app.engine('handlebars', exphbs({ defaultLayout: "main" }));
 app.set('view engine', 'handlebars');
-
-
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/unit18Populater";
 //connect to Mongodb
-mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 //routes
 
 // Get route for scraping the nytimes website
 
 app.get("/scrape", function (req, res) {
-    axios.get("http://www.nytimes.com").then(function (response) {
+    axios.get("https://www.nytimes.com").then(function (response) {
         var $ = cheerio.load(response.data);
-
+        console.log($);
+        console.log(response.data);
+        res.json(response.data);
 
     })
 });
