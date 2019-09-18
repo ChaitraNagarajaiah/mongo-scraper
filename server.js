@@ -27,10 +27,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 
-var exphbs = require('express-handlebars');
 
-app.engine('handlebars', exphbs({ defaultLayout: "main" }));
-app.set('view engine', 'handlebars');
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/unit18Populater";
 //connect to Mongodb
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
@@ -42,12 +39,67 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 app.get("/scrape", function (req, res) {
     axios.get("https://www.nytimes.com").then(function (response) {
         var $ = cheerio.load(response.data);
-        console.log($);
-        console.log(response.data);
-        res.json(response.data);
+        // console.log($);
+        // console.log(response.data);
+        const articleArr = [];
+
+        $('.assetWrapper').each(function (i, element) {
+            const headline = $(this).find('h2').text().trim();
+            const link = $(this).find('a').attr('href').trim();
+            const summary = $(this).find('p').text().trim();
+
+            const article = {
+                title: headline,
+                link,
+                summary
+            }
+
+            if (article.title && article.link && article.summary) {
+                articleArr.push(article);
+            }
+
+            console.log(article)
+        })
+
+        db.Article.insertMany(articleArr);
+
+        res.json('scrape complete');
 
     })
 });
+
+app.get('/api/articles', function (req, res) {
+    db.Article.find().then(dbModel => {
+        res.json(dbModel);
+    })
+})
+//  .populate()
+app.get("/api/articles/:id", (req, res) => {
+    const { id } = req.params;
+    db.Article.find({
+        _id: id
+    })
+        .populate("comments")
+        .then(dbArticle => {
+            res.json(dbArticle);
+        });
+});
+
+app.get('/api/articles/:id', function (req, res) {
+    console.log(req.params.id);
+    db.Article.find({
+        _id: req.params.id
+    }).then(dbModel => {
+        res.json(dbModel);
+    })
+})
+
+app.post('/api/articles/:id', function (req, res) {
+    db.Comment.create(req.body).then(function (comment) {
+        res.json(comment);
+    })
+})
+
 // Start the server
 app.listen(PORT, function () {
     console.log("App running on port " + PORT + "!");
