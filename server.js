@@ -57,8 +57,6 @@ app.get("/scrape", function (req, res) {
             if (article.title && article.link && article.summary) {
                 articleArr.push(article);
             }
-
-            console.log(article)
         })
 
         db.Article.insertMany(articleArr);
