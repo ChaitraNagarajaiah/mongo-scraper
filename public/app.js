@@ -2,12 +2,35 @@ $.get('/scrape', function (res) {
     console.log(res)
 })
 
-$.getJSON("/api/articles", function (data) {
-    //console.log(data);
-    for (var i = 0; i < data.length; i++) {
-        $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + "<a href='" + data[i].link + "'>Link to the article</a>" + "<br />" + data[i].summary + "</p>");
-    }
+$(document).ready(function () {
+    console.log("hi");
+    hide()
+
+
+    $.getJSON("/api/articles", function (data) {
+        //console.log(data);
+        for (var i = 0; i < data.length; i++) {
+            // $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + "<a href='" + data[i].link + "'>Link to the article</a>" + "<br />" + data[i].summary + "</p>");
+            $("#articles").append(`
+            <div class="">
+                <p data-id='${data[i]._id}'>
+                    ${ data[i].title} </br>
+                    <a href='" +${ data[i].link}'>
+                        Link to the article
+                    </a> </br>
+                    ${data[i].summary}
+                </p>
+                <button>comment</button>
+                <button>save</button>
+            </div>
+        `);
+        }
+    });
 });
+
+$("#scrape").click(function () {
+    console.log("hello");
+})
 
 $(document).on("click", "p", function () {
     $("#comments").empty();
@@ -20,10 +43,19 @@ $(document).on("click", "p", function () {
     //     url: "/api/articles/" + thisId
     // }
 
-    $("#comments").append("<h2>" + title + "</h2>");
-    $("#comments").append("<input id ='titleinput' name='title'>");
-    $("#comments").append("<textarea id='bodyinput' name='body'></textarea>");
-    $("#comments").append("<button data-id='" + thisId + "' id='savecomment'>Save Comment</button>");
+    // $("#comments").append("<h2>" + title + "</h2>");
+    // $("#comments").append("<input id ='titleinput' name='title'>");
+    // $("#comments").append("<textarea id='bodyinput' name='body'></textarea>");
+    // $("#comments").append("<button data-id='" + thisId + "' id='savecomment'>Save Comment</button>");
+
+    $("#comments").append(`
+        <div class="">
+            <h2>${title}</h2>
+            <input id ='titleinput' name='title'>
+            <textarea id='bodyinput' name='body'></textarea>
+            <button data-id='${thisId}' id='savecomment'>Save Comment</button>
+        </div>
+    `)
 
 
 
